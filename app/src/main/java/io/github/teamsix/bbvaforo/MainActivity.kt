@@ -1,13 +1,16 @@
 package io.github.teamsix.bbvaforo
 
 import android.Manifest
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -21,28 +24,19 @@ class MainActivity : AppCompatActivity() {
 	private val requestPermissionLauncher = registerForActivityResult(
 		ActivityResultContracts.RequestPermission()) { granted ->
 		if (granted) {
-			takePicture()
-			android.util.Log.d("CAMERA", "GRANTED")
+			takePictureOrRequestPermission()
 		}
 		else {
 			Toast.makeText(this, "Error. Permiso a la camara denegegado.", Toast.LENGTH_SHORT).show()
 		}
 	}
-	private val takeCameraLauncher = registerForActivityResult(
+	private val takePictureLauncher = registerForActivityResult(
 		ActivityResultContracts.TakePicture()) { success ->
 		if (success) {
 			takePictureCallback()
 		}
 	}
 	private var tempUri: Uri? = null
-
-	private fun takePictureCallback() {
-
-	}
-
-	private fun takePicture() {
-
-	}
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
@@ -86,4 +80,37 @@ class MainActivity : AppCompatActivity() {
 		return navController.navigateUp(appBarConfiguration)
 				|| super.onSupportNavigateUp()
 	}
+
+	private fun takePictureOrRequestPermission() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+			takePicture()
+		}
+		else {
+			if (ContextCompat.checkSelfPermission(
+					this,
+					Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+				requestPermissionLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+			}
+			else {
+				takePicture()
+			}
+		}
+	}
+
+	private fun takePicture() {
+		val savedUri = BitmapHelper.savePicture(this) ?: return
+		tempUri = savedUri
+		takePictureLauncher.launch(tempUri)
+	}
+	
+	private fun takePictureCallback() {
+		android.util.Log.d("SUCCESS", "DEMO")
+		tempUri?.let { onSuccessCallback(it) }
+	}
+
+	fun setOnSuccessListener(callback: (uri: Uri) -> Unit) {
+		onSuccessCallback = callback
+	}
+
+	private var onSuccessCallback: (uri: Uri) -> Unit = {}
 }

@@ -1,5 +1,6 @@
 package io.github.teamsix.bbvaforo
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,16 +14,19 @@ class FirstFragment : Fragment() {
 	private var _binding: FragmentFirstBinding? = null
 	private val binding get() = _binding!!
 
+	override fun onAttach(context: Context) {
+		super.onAttach(context)
+		(context as MainActivity).setOnSuccessListener { uri ->
+			binding.image.setImageURI(uri)
+		}
+	}
+
 	override fun onCreateView(
 		inflater: LayoutInflater, container: ViewGroup?,
 		savedInstanceState: Bundle?
 	): View {
 		_binding = FragmentFirstBinding.inflate(inflater, container, false)
 		return binding.root
-	}
-
-	override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-		super.onViewCreated(view, savedInstanceState)
 	}
 
 	override fun onDestroyView() {
