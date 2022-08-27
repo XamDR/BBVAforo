@@ -6,16 +6,18 @@
 	android:layout_height="match_parent"
 	tools:context=".FirstFragment">
 
-	<ImageView
-		android:id="@+id/image"
-		android:layout_width="0dp"
-		android:layout_height="0dp"
+	<TextView
+		android:id="@+id/faces"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_margin="8dp"
-		tools:src="@drawable/ic_launcher_foreground"
+		android:padding="8dp"
+		android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
+		android:textStyle="bold"
+		tools:text="0 caras"
 		app:layout_constraintBottom_toBottomOf="parent"
 		app:layout_constraintEnd_toEndOf="parent"
 		app:layout_constraintStart_toStartOf="parent"
-		app:layout_constraintTop_toTopOf="parent"
-		android:contentDescription="@string/image" />
+		app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

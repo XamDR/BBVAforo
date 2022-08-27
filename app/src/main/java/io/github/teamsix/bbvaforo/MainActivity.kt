@@ -104,7 +104,6 @@ class MainActivity : AppCompatActivity() {
 	}
 	
 	private fun takePictureCallback() {
-		android.util.Log.d("SUCCESS", "DEMO")
 		tempUri?.let { onSuccessCallback(it) }
 	}
 
